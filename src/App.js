@@ -31,35 +31,39 @@ function App() {
   const taxAmount = (total * taxRate) / 100;
   const grandTotal = total + taxAmount;
 
-const downloadInvoice = () => {
-  setIsPrinting(true); // hide action column
-  setTimeout(() => {
-    const input = document.getElementById('invoice');
-    html2canvas(input, { scale: 2 }).then(canvas => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
+  const downloadInvoice = () => {
+    setIsPrinting(true); // hide action column
+    setTimeout(() => {
+      const input = document.getElementById('invoice');
+      html2canvas(input, { scale: 2 }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
 
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
 
-      const imgScaledWidth = imgWidth * ratio;
-      const imgScaledHeight = imgHeight * ratio;
+        const imgScaledWidth = imgWidth * ratio;
+        const imgScaledHeight = imgHeight * ratio;
 
-      const marginX = (pdfWidth - imgScaledWidth) / 2;
-      const marginY = 10;
+        const marginX = (pdfWidth - imgScaledWidth) / 2;
+        const marginY = 10;
 
-      pdf.addImage(imgData, 'PNG', marginX, marginY, imgScaledWidth, imgScaledHeight);
-      pdf.save('invoice.pdf');
-      setIsPrinting(false); // restore action column
-    });
-  }, 100); // wait for DOM to update
-};
+        pdf.addImage(imgData, 'PNG', marginX, marginY, imgScaledWidth, imgScaledHeight);
+        pdf.save('invoice.pdf');
+        setIsPrinting(false); // restore action column
+      });
+    }, 100); // wait for DOM to update
+  };
 
   return (
     <div className="App">
+      <header className="App-header">
+        <p>Edit <code>src/App.js</code> and save to reload.</p>
+      </header>
+
       <h1>Billing Software</h1>
 
       <div className="customer-section">
@@ -99,7 +103,7 @@ const downloadInvoice = () => {
               <th>Price (₹)</th>
               <th>Quantity</th>
               <th>Subtotal (₹)</th>
-{!isPrinting && <th>Action</th>}
+              {!isPrinting && <th>Action</th>}
             </tr>
           </thead>
           <tbody>
@@ -109,11 +113,11 @@ const downloadInvoice = () => {
                 <td>{item.price.toFixed(2)}</td>
                 <td>{item.quantity}</td>
                 <td>{(item.price * item.quantity).toFixed(2)}</td>
-{!isPrinting && (
-  <td>
-    <button onClick={() => removeItem(idx)}>Remove</button>
-  </td>
-)}
+                {!isPrinting && (
+                  <td>
+                    <button onClick={() => removeItem(idx)}>Remove</button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
